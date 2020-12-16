@@ -10,7 +10,7 @@
 			<input type="submit" value="Envoyer" name="envoyer">
 		</form>
 		<?php
-			$lien=mysqli_connect("localhost","root","root","tp");
+			$lien=mysqli_connect("localhost","root","","tp");
 			
 			//Ajout d'un commentaire
 			if(isset($_POST['envoyer']))
@@ -26,7 +26,7 @@
 			}
 			
 			//Quelle page je suis et quels commentaires prendre
-			if(!isset($_GET['page']))
+			if(!isset($_GET['page']) || $_GET['page']<1)
 			{
 				$page=1;
 			}
@@ -34,7 +34,7 @@
 			{
 				$page=$_GET['page'];
 			}
-			$commparpage=5;
+			$commparpage=3;
 			$premiercomm=$commparpage*($page-1);
 			$req="SELECT * FROM commentaires ORDER BY id LIMIT $premiercomm,$commparpage";//LIMIT dit ou je commence et combien j'en prends
 			$res=mysqli_query($lien,$req);
@@ -65,13 +65,28 @@
 				echo "<br> Pages : ";
 				echo "<a href='commentaires.php?page=1'> Début </a>";
 				echo "<a href='commentaires.php?page=".($page-1)."'> Précédente </a>";
-				for($i=($page-2);$i<=($page+2);$i++)
-				{
-					echo "<a href='commentaires.php?page=$i'> $i </a>";
+				if($page==1){
+					for($i=($page);$i<=($page+2);$i++)
+					{
+						echo "<a href='commentaires.php?page=$i'> $i </a>";
+					}
 				}
+				elseif ($page==2) {
+					for($i=($page-1);$i<=($page+2);$i++)
+					{
+						echo "<a href='commentaires.php?page=$i'> $i </a>";
+					}
+				}
+				else{
+					for($i=($page-2);$i<=($page+2);$i++)
+					{
+						echo "<a href='commentaires.php?page=$i'> $i </a>";
+					}
+				}
+			}
 				echo "<a href='commentaires.php?page=".($page+1)."'> Suivante </a>";
 				echo "<a href='commentaires.php?page=$nbpages'> Fin </a>";
-			}
+			
 			mysqli_close($lien);
 		?>	
 	</body>
